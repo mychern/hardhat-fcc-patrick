@@ -1,0 +1,1 @@
+1. HTML / JavaScript (later on, will transition towards Nextjs / reactjs)
