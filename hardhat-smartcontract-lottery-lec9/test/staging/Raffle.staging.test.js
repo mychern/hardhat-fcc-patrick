@@ -7,13 +7,13 @@ developmentChain.includes(network.name)
     : describe("Raffle Staging Tests", function () {
           let raffle, raffleEntranceFee, deployer;
 
-          beforeEach(async function () {
+          beforeEach(async () => {
               deployer = (await getNamedAccounts()).deployer;
               raffle = await ethers.getContract("Raffle", deployer);
               raffleEntranceFee = await raffle.getEntranceFee();
           });
 
-          describe("fulfillRandomWords", function () {
+          describe("fulfillRandomWords", () => {
               it("works with live Chainlink Keepers and Chainlink VRF, we get a random winner", async function () {
                   // enter the raffle
                   console.log("Setting up test...");
@@ -21,11 +21,11 @@ developmentChain.includes(network.name)
                   const accounts = await ethers.getSigners();
 
                   console.log("Setting up Listener...");
-                  await new Promise(async (resolve, reject) => {
+                  await new Promise(async (res, rej) => {
                       // setup listener before we enter the raffle
                       // Just in case the blockchain moves REALLY fast
-                      raffle.once("WinnerPicked", async () => {
-                          console.log("WinnerPicked event fired!");
+                      raffle.once("AddressPickedWinner", async () => {
+                          console.log("AddressPickedWinner event has been triggered!");
                           try {
                               // add our asserts here
                               const recentWinner = await raffle.getRecentWinner();
@@ -41,20 +41,18 @@ developmentChain.includes(network.name)
                                   winnerStartingBalance.add(raffleEntranceFee).toString()
                               );
                               assert(endingTimeStamp > startingTimeStamp);
-                              resolve();
+                              res();
                           } catch (error) {
                               console.log(error);
-                              reject(error);
+                              rej(error);
                           }
                       });
-                      // Then entering the raffle
                       console.log("Entering Raffle...");
-                      const tx = await raffle.enterRaffle({ value: raffleEntranceFee });
-                      await tx.wait(1);
+                      const txn = await raffle.enterRaffle({ value: raffleEntranceFee });
+                      await txn.wait(1);
                       console.log("Ok, time to wait...");
                       const winnerStartingBalance = await accounts[0].getBalance();
-
-                      // and this code WONT complete until our listener has finished listening!
+                      // At this point addressPickedWinner event should be triggered.
                   });
               });
           });
