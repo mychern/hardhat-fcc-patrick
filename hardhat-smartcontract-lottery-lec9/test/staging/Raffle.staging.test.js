@@ -49,8 +49,9 @@ developmentChain.includes(network.name)
                       });
                       console.log("Entering Raffle...");
                       const txn = await raffle.enterRaffle({ value: raffleEntranceFee });
+                      console.log(accounts[0].address);
                       await txn.wait(1);
-                      console.log("Ok, time to wait...");
+                      console.log("Time to wait...");
                       const winnerStartingBalance = await accounts[0].getBalance();
                       // At this point addressPickedWinner event should be triggered.
                   });

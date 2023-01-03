@@ -25,6 +25,7 @@ const { expect, assert } = require("chai");
                   const raffleState = await raffle.getRaffleState();
                   assert.equal(raffleState.toString(), "0");
                   assert.equal(interval.toString(), networkConfig[chainId]["keeperUpdateInterval"]);
+                  assert.equal(raffleEntranceFee.toString(), "10000000000000000")
                   // should write tests for the rest of the parameters, but save the trouble for now...
               });
           });
